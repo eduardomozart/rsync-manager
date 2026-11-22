@@ -73,5 +73,14 @@ struct ShellHelper {
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         return String(data: data, encoding: .utf8) ?? ""
     }
+
+    static func makeSSHAskPassScript() throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rsync-askpass-\(UUID().uuidString).sh")
+        let script = "#!/bin/zsh\nprintf '%s\\n' \"$RSYNC_SSH_PASSWORD\"\n"
+        try Data(script.utf8).write(to: url, options: .atomic)
+        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
+        return url
+    }
 }
 
