@@ -326,6 +326,9 @@ class SyncTaskViewModel: ObservableObject {
         storageDirectory ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
+    var isRequestingFolderAccess = false
+    lazy var folderAccessManager = FolderSandboxAccessManager(bypassPermissionPrompts: storageDirectory != nil)
+
     func saveLogs() {
         let fileURL = getDocumentsDirectory().appendingPathComponent(logsFileName)
         do {
